@@ -3,224 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kuis Bahasa Jepang (JLPT N3) - 10 Soal Acak, Pilihan Acak, Otomatis & Ulasan</title>
+    <title>Kuis Bahasa Jepang (JLPT N3) - 10 Soal Acak</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .quiz-container {
-            max-width: 700px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background-color: #f9fafb;
-            border-radius: 0.75rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        .question-header, .review-item {
-            border-bottom: 1px solid #e5e7eb;
-            padding-bottom: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        .choice-button {
-            display: block;
-            width: 100%;
-            text-align: left;
-            padding: 0.75rem 1rem;
-            margin-bottom: 0.75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.5rem;
-            background-color: #ffffff;
-            transition: background-color 0.3s, border-color 0.3s;
-        }
-        .choice-button:hover:not(:disabled) { background-color: #f3f4f6; }
-        .choice-button.correct { background-color: #d1fae5 !important; border-color: #6ee7b7 !important; color: #065f46 !important; }
-        .choice-button.incorrect { background-color: #fee2e2 !important; border-color: #fca5a5 !important; color: #991b1b !important; }
-        .choice-button.selected-by-user { border-width: 2px; border-color: #fbbf24; }
-        .feedback, .review-feedback { padding: 1rem; margin-top: 1.5rem; border-radius: 0.5rem; }
-        .feedback.correct { background-color: #ecfdf5; color: #065f46; }
-        .feedback.incorrect { background-color: #fef2f2; color: #991b1b; }
-        .action-button { padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; transition: background-color 0.3s; cursor: pointer; }
-        .next-button { background-color: #3b82f6; color: white; }
-        .next-button:hover { background-color: #2563eb; }
-        .restart-button { background-color: #10b981; color: white; }
-        .restart-button:hover { background-color: #059669; }
-        .review-button { background-color: #f59e0b; color: white; }
-        .review-button:hover { background-color: #d97706; }
-        .japanese-text { font-family: 'Hiragino Kaku Gothic ProN', 'メイリオ', Meiryo, sans-serif; }
-        .review-item p { margin-bottom: 0.5rem; }
+        body{font-family:'Inter',sans-serif}
+        .quiz-container{max-width:700px;margin:2rem auto;padding:2rem;background:#f9fafb;border-radius:.75rem;box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05)}
+        .question-header,.review-item{border-bottom:1px solid #e5e7eb;padding-bottom:1rem;margin-bottom:1.5rem}
+        .choice-button{display:block;width:100%;text-align:left;padding:.75rem 1rem;margin-bottom:.75rem;border:1px solid #d1d5db;border-radius:.5rem;background:#fff;transition:.3s}
+        .choice-button:hover:not(:disabled){background:#f3f4f6}
+        .choice-button.correct{background:#d1fae5!important;border-color:#6ee7b7!important;color:#065f46!important}
+        .choice-button.incorrect{background:#fee2e2!important;border-color:#fca5a5!important;color:#991b1b!important}
+        .choice-button.selected-by-user{border-width:2px;border-color:#fbbf24}
+        .feedback,.review-feedback{padding:1rem;margin-top:1.5rem;border-radius:.5rem}
+        .feedback.correct{background:#ecfdf5;color:#065f46}
+        .feedback.incorrect{background:#fef2f2;color:#991b1b}
+        .action-button{padding:.75rem 1.5rem;border-radius:.5rem;font-weight:600;transition:.3s;cursor:pointer}
+        .next-button{background:#3b82f6;color:#fff}.next-button:hover{background:#2563eb}
+        .restart-button{background:#10b981;color:#fff}.restart-button:hover{background:#059669}
+        .review-button{background:#f59e0b;color:#fff}.review-button:hover{background:#d97706}
+        .japanese-text{font-family:'Hiragino Kaku Gothic ProN','メイリオ',Meiryo,sans-serif}
     </style>
 </head>
 <body class="bg-gray-100">
-    <div class="quiz-container">
-        <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">Kuis Bahasa Jepang (JLPT N3)</h1>
-        <div id="quiz-area">
-            <div class="question-header">
-                <p class="text-sm text-gray-500 mb-1" id="question-counter"></p>
-                <h2 class="text-xl font-semibold text-gray-700" id="question-type"></h2>
-                <p class="text-lg text-gray-800 mt-2" id="question-text"></p>
-            </div>
-            <div id="choices-area" class="grid grid-cols-1 gap-y-3"></div>
-            <div id="feedback-area" class="mt-6"></div>
-            <div class="mt-8 text-right">
-                <button id="next-question-button" class="action-button next-button" style="display: none;">Pertanyaan Berikutnya Manual</button>
-            </div>
-        </div>
-        <div id="results-area" style="display: none;" class="text-center">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">Hasil Tes</h2>
-            <p class="text-xl text-gray-700 mb-2">Anda menjawab dengan benar <span id="score" class="font-bold">0</span> dari <span id="total-questions-in-test" class="font-bold">10</span> pertanyaan.</p>
-            <p class="text-lg text-gray-600 mb-6" id="result-message"></p>
-            <div class="flex flex-col sm:flex-row justify-center gap-4 mt-4">
-                <button id="review-incorrect-button" class="action-button review-button" style="display: none;">Ulas Jawaban Salah</button>
-                <button id="new-test-button" class="action-button restart-button">Mulai Tes Baru (10 Pertanyaan)</button>
-            </div>
-        </div>
-        <div id="review-area" style="display: none;">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Ulasan Jawaban Salah</h2>
-            <div id="review-content" class="space-y-6"></div>
-            <div class="mt-8 text-center">
-                <button id="back-to-results-button" class="action-button next-button">Kembali ke Hasil</button>
-                <button id="start-new-test-from-review-button" class="action-button restart-button ml-4">Mulai Tes Baru</button>
-            </div>
-        </div>
+<div class="quiz-container">
+  <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">Kuis Bahasa Jepang (JLPT N3)</h1>
+  <div id="quiz-area">
+    <div class="question-header">
+      <p id="question-counter" class="text-sm text-gray-500 mb-1"></p>
+      <h2 id="question-type" class="text-xl font-semibold text-gray-700"></h2>
+      <p id="question-text" class="text-lg text-gray-800 mt-2"></p>
     </div>
+    <div id="choices-area" class="grid grid-cols-1 gap-y-3"></div>
+    <div id="feedback-area" class="mt-6"></div>
+  </div>
 
-    <script>
-        // === DATA SOAL ===
-        const baseQuizData = [
-            { id:"q1", type:"Membaca Kanji (漢字の読み方)", question:"この本は、駅前の店で簡単に<u>手</u>に入ります。", question_translation:"Kono hon wa, ekimae no mise de kantan ni <u>te</u> ni hairimasu.", choices:["ち","しゅ","て","す"], correctAnswer:"て", explanation:"『手に入る』 dibaca 'te ni hairu'." },
-            { id:"q2", type:"Memilih Kanji yang Tepat (適切な漢字選び)", question:"新しいエアコンの<u>せっち</u>工事は明日です。", question_translation:"Atarashii eakon no <u>secchi</u> kouji wa ashita desu.", choices:["設地","設置","説地","説置"], correctAnswer:"設置", explanation:"せっち → 設置." },
-            { id:"q3", type:"Memilih Kosakata yang Tepat (適切な語彙選択)", question:"会議の時間は急に（　　　）されました。", question_translation:"Kaigi no jikan wa kyuu ni (　　　) saremashita.", choices:["変化","変更","交換","移動"], correctAnswer:"変更", explanation:"変更 (henkou) = perubahan jadwal." },
-            { id:"q4", type:"Mengganti Kata/Frasa (言葉の言い換え)", question:"日本での生活に<u>だんだん</u>慣れてきました。", question_translation:"Nihon deno seikatsu ni <u>dandan</u> narete kimashita.", choices:["ほとんど","いつも","とうとう","少しずつ"], correctAnswer:"少しずつ", explanation:"だんだん = 少しずつ (perlahan‑lahan)." },
-            { id:"q5", type:"Penggunaan Kata (言葉の使い方)", question:"Pilih kalimat di mana kata 'めったに' digunakan dengan benar.", choices:["彼はめったに遅刻しません。","この本はめったに面白いです。","めったに頑張れば、成功できます。","昨日はめったに雨が降りました。"], correctAnswer:"彼はめったに遅刻しません。", explanation:"めったに + bentuk negatif." },
-            { id:"q6", type:"Tata Bahasa - Pilihan Partikel", question:"昨日、友達（　　　）映画を見に行きました。", question_translation:"Kinou, tomodachi (　　　) eiga o mi ni ikimashita.", choices:["を","に","と","で"], correctAnswer:"と", explanation:"と → bersama." },
-            { id:"q7", type:"Kosakata - Makna Kontekstual", question:"この問題は（　　　）なので、もう少しヒントをください。", question_translation:"Kono mondai wa (　　　) nanode, mou sukoshi hinto o kudasai.", choices:["かんたん","ふくざつ","べんり","あんぜん"], correctAnswer:"ふくざつ", explanation:"ふくざつ = rumit." },
-            { id:"q8", type:"Membaca Kanji", question:"将来、医者になるのが彼の<u>夢</u>です。", question_translation:"Shourai, isha ni naru no ga kare no <u>yume</u> desu.", choices:["ゆめ","むゆ","ゆむ","めゆ"], correctAnswer:"ゆめ", explanation:"夢 dibaca 'yume'." },
-            { id:"q9", type:"Tata Bahasa - Konjugasi Kata Kerja", question:"図書館では静かに本を（　　　）ください。", question_translation:"Toshokan dewa shizuka ni hon o (　　　) kudasai.", choices:["読みます","読んで","読むの","読めば"], correctAnswer:"読んで", explanation:"～てください bentuk permintaan." },
-            { id:"q10", type:"Tata Bahasa - Struktur Kalimat", question:"Urutkan: 「きのう / とても / 映画は / 面白かったです」", choices:["きのう とても 映画は 面白かったです","映画は きのう とても 面白かったです","とても きのう 映画は 面白かったです","面白かったです きのう とても 映画は"], correctAnswer:"映画は きのう とても 面白かったです", explanation:"Subjek → keterangan → predikat." }
-        ];
-        // Tambahan soal kosong (bisa diisi nanti)
-        const additionalQuizData = [];
-        const allQuizData = [...baseQuizData, ...additionalQuizData];
+  <div id="results-area" style="display:none" class="text-center">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Hasil Tes</h2>
+    <p class="text-xl text-gray-700 mb-2">Benar <span id="score" class="font-bold"></span>/<span id="total-questions-in-test" class="font-bold">10</span></p>
+    <p id="result-message" class="text-lg text-gray-600 mb-6"></p>
+    <div class="flex flex-col sm:flex-row justify-center gap-4 mt-4">
+      <button id="review-incorrect-button" class="action-button review-button" style="display:none">Ulas Jawaban Salah</button>
+      <button id="new-test-button" class="action-button restart-button">Tes Baru</button>
+    </div>
+  </div>
 
-        // === STATE ===
-        let currentTestQuestions = [];
-        let incorrectAnswers = [];
-        let currentQuestionIndex = 0;
-        let score = 0;
-        const QUESTIONS_PER_TEST = 10;
-        let autoAdvanceTimer = null;
+  <div id="review-area" style="display:none">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Ulasan Jawaban Salah</h2>
+    <div id="review-content" class="space-y-6"></div>
+    <div class="text-center mt-8">
+      <button id="back-to-results-button" class="action-button next-button">Kembali</button>
+      <button id="start-new-test-from-review-button" class="action-button restart-button ml-4">Tes Baru</button>
+    </div>
+  </div>
+</div>
 
-        // === ELEMENTS ===
-        const quizAreaEl = document.getElementById('quiz-area');
-        const resultsAreaEl = document.getElementById('results-area');
-        const reviewAreaEl = document.getElementById('review-area');
-        const questionCounterEl = document.getElementById('question-counter');
-        const questionTypeEl = document.getElementById('question-type');
-        const questionTextEl = document.getElementById('question-text');
-        const choicesAreaEl = document.getElementById('choices-area');
-        const feedbackAreaEl = document.getElementById('feedback-area');
-        const nextQuestionButtonEl = document.getElementById('next-question-button');
-        const scoreEl = document.getElementById('score');
-        const totalQuestionsInTestEl = document.getElementById('total-questions-in-test');
-        const resultMessageEl = document.getElementById('result-message');
-        const reviewIncorrectButtonEl = document.getElementById('review-incorrect-button');
-        const newTestButtonEl = document.getElementById('new-test-button');
-        const reviewContentEl = document.getElementById('review-content');
-        const backToResultsButtonEl = document.getElementById('back-to-results-button');
-        const startNewTestFromReviewButtonEl = document.getElementById('start-new-test-from-review-button');
+<script>
+/* ========= 10 soal dasar ========= */
+const baseQuizData=[
+ {id:"q1",type:"Membaca Kanji",question:"この本は、駅前の店で簡単に<u>手</u>に入ります。",question_translation:"Kono hon wa, ekimae no mise de kantan ni <u>te</u> ni hairimasu.",choices:["ち","しゅ","て","す"],correctAnswer:"て",explanation:"手 dibaca て (te)."},
+ {id:"q2",type:"Memilih Kanji",question:"新しいエアコンの<u>せっち</u>工事は明日です。",question_translation:"Atarashii eakon no <u>secchi</u> kouji wa ashita desu.",choices:["設地","設置","説地","説置"],correctAnswer:"設置",explanation:"せっち → 設置."},
+ {id:"q3",type:"Memilih Kosakata",question:"会議の時間は急に（　　）されました。",question_translation:"Kaigi no jikan wa kyuu ni (     ) saremashita.",choices:["変化","変更","交換","移動"],correctAnswer:"変更",explanation:"変更 (henkou) = perubahan jadwal."},
+ {id:"q4",type:"Mengganti Kata",question:"日本での生活に<u>だんだん</u>慣れてきました。",question_translation:"Nihon de no seikatsu ni <u>dandan</u> narete kimashita.",choices:["ほとんど","いつも","とうとう","少しずつ"],correctAnswer:"少しずつ",explanation:"だんだん = 少しずつ."},
+ {id:"q5",type:"Penggunaan Kata",question:"『めったに』の正しい使い方は？",choices:["彼はめったに遅刻しません。","この本はめったに面白いです。","めったに頑張れば成功します。","昨日はめったに雨が降りました。"],correctAnswer:"彼はめったに遅刻しません。",explanation:"めったに + bentuk negatif."},
+ {id:"q6",type:"Tata Bahasa - Partikel",question:"昨日、友達（　　）映画を見に行きました。",question_translation:"Kinou, tomodachi (     ) eiga o mi ni ikimashita.",choices:["を","に","と","で"],correctAnswer:"と",explanation:"と = bersama."},
+ {id:"q7",type:"Kosakata - Konteks",question:"この問題は（　　）なので、もう少しヒントをください。",choices:["かんたん","ふくざつ","べんり","あんぜん"],correctAnswer:"ふくざつ",explanation:"ふくざつ = rumit."},
+ {id:"q8",type:"Membaca Kanji",question:"将来、医者になるのが彼の<u>夢</u>です。",choices:["ゆめ","むゆ","ゆむ","めゆ"],correctAnswer:"ゆめ",explanation:"夢 dibaca ゆめ."},
+ {id:"q9",type:"Tata Bahasa - Bentuk Te",question:"図書館では静かに本を（　　）ください。",choices:["読みます","読んで","読むの","読めば"],correctAnswer:"読んで",explanation:"～てください = permintaan sopan."},
+ {id:"q10",type:"Tata Bahasa - Struktur",question:"語順：「きのう / とても / 映画は / 面白かったです」",choices:["きのう とても 映画は 面白かったです","映画は きのう とても 面白かったです","とても きのう 映画は 面白かったです","面白かったです きのう とても 映画は"],correctAnswer:"映画は きのう とても 面白かったです",explanation:"Urutan: Subjek→Keterangan→Predikat."}
+];
 
-        // === FUNCTIONS ===
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-        }
-        function clearTimer() { if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; } }
+/* ========= Tambahan 100 soal (50 kosakata + 50 tata bahasa) ========= */
+const additionalQuizData=[
+/* ===== Kosakata 50 ===== */
+{id:"v_01",type:"Kosakata (Arti Kata)",question:"Apa arti『約束』(yakusoku)?",choices:["janji","catatan","tujuan","aturan"],correctAnswer:"janji",explanation:"約束=janji."},
+{id:"v_02",type:"Kosakata (Sinonim)",question:"Sinonim『かなり』adalah…",choices:["けっこう","すこし","ぜんぜん","ほとんど"],correctAnswer:"けっこう",explanation:"かなり/けっこう=cukup."},
+{id:"v_03",type:"Kosakata (Arti Kata Kerja)",question:"『増える』berarti…",choices:["bertambah","berkurang","membeku","mencair"],correctAnswer:"bertambah",explanation:"増える=bertambah."},
+{id:"v_04",type:"Kosakata (Bentuk Kamus)",question:"Bentuk kamus『忘れました』?",choices:["忘れる","忘れない","忘れられる","忘れさせる"],correctAnswer:"忘れる",explanation:"Grup2: ます→る."},
+{id:"v_05",type:"Kosakata (Bacaan Kanji)",question:"On‑yomi『景』?",choices:["ケイ","エイ","ケン","ゲイ"],correctAnswer:"ケイ",explanation:"風景=フウケイ."},
+{id:"v_06",type:"Kosakata (Lawan Kata)",question:"Lawan kata『可能』?",choices:["不可能","不自然","不健康","不安定"],correctAnswer:"不可能",explanation:"不+kata=negasi."},
+{id:"v_07",type:"Kosakata (Arti Kata)",question:"『平均』(heikin) berarti…",choices:["rata‑rata","spesial","berat","volume"],correctAnswer:"rata‑rata",explanation:"平均=average."},
+{id:"v_08",type:"Kosakata (Katakana)",question:"Arti『アルバイト』?",choices:["kerja paruh waktu","pelatih","kelas ekstra","tugas rumah"],correctAnswer:"kerja paruh waktu",explanation:"バイト=part‑time."},
+{id:"v_09",type:"Kosakata (Pasangan)",question:"Intransitif dari『開ける』?",choices:["開く","閉める","落ちる","壊れる"],correctAnswer:"開く",explanation:"開ける⇔開く."},
+{id:"v_10",type:"Kosakata (Prefiks)",question:"Prefiks『未〜』bermakna…",choices:["belum","sudah","kurang","lebih"],correctAnswer:"belum",explanation:"未=belum."},
+{id:"v_11",type:"Kosakata (Serapan)",question:"『プラスチック』adalah…",choices:["plastik","kaca","logam","kertas"],correctAnswer:"plastik",explanation:"プラスチック=plastic."},
+{id:"v_12",type:"Kosakata (Arti Kata)",question:"『似ている』berarti…",choices:["mirip","jarang","tinggi","jauh"],correctAnswer:"mirip",explanation:"似ている=mirip."},
+{id:"v_13",type:"Kosakata (Potensial)",question:"Potensial『書く』?",choices:["書ける","書かれる","書かせる","書こう"],correctAnswer:"書ける",explanation:"う→え+る."},
+{id:"v_14",type:"Kosakata (Arti Kanji)",question:"Arti kanji『橋』?",choices:["jembatan","jalan","kolam","ladang"],correctAnswer:"jembatan",explanation:"橋=bridge."},
+{id:"v_15",type:"Kosakata (Lampau)",question:"Lampau i‑adj『高い』?",choices:["高かった","高くなかった","高くて","高いでした"],correctAnswer:"高かった",explanation:"い→かった."},
+{id:"v_16",type:"Kosakata (Angka)",question:"Bacaan 9000?",choices:["きゅうせん","きゅうひゃく","くせん","くまん"],correctAnswer:"きゅうせん",explanation:"千=1000."},
+{id:"v_17",type:"Kosakata (Idiom)",question:"Ungkapan『頭が痛い』secara idiomatis berarti…",choices:["punya masalah","demam","malas","bosan"],correctAnswer:"punya masalah",explanation:"頭が痛い=punya masalah."},
+{id:"v_18",type:"Kosakata (Arti Kata)",question:"Apa arti『記事』(kiji)?",choices:["artikel","upah","alat","lemari"],correctAnswer:"artikel",explanation:"記事=artikel."},
+{id:"v_19",type:"Kosakata (Arti Kata)",question:"『支払う』(shiharau) berarti…",choices:["membayar","menarik","mencetak","membakar"],correctAnswer:"membayar",explanation:"支払う=bayar."},
+{id:"v_20",type:"Kosakata (Arti Kata)",question:"『詳細』(shousai) berarti…",choices:["rincian","kerusakan","keuntungan","inti"],correctAnswer:"rincian",explanation:"詳細=detail."},
+{id:"v_21",type:"Kosakata (Katakana)",question:"『レストラン』merujuk pada…",choices:["rumah makan","kantor","rumah sakit","lapangan"],correctAnswer:"rumah makan",explanation:"レストラン=restoran."},
+{id:"v_22",type:"Kosakata (Bentuk Nai)",question:"Bentuk nai『飲む』?",choices:["飲まない","飲めない","飲みません","飲んだ"],correctAnswer:"飲まない",explanation:"う→あ+ない."},
+{id:"v_23",type:"Kosakata (Sinonim)",question:"Sinonim『必要』?",choices:["大切","無理","自由","不便"],correctAnswer:"大切",explanation:"必要/大切=kebutuhan/penting."},
+{id:"v_24",type:"Kosakata (Arti Kata)",question:"『状況』(joukyou) berarti…",choices:["situasi","hasil","pendapat","jumlah"],correctAnswer:"situasi",explanation:"状況=situasi."},
+{id:"v_25",type:"Kosakata (Arti Kata)",question:"『準備』(junbi) berarti…",choices:["persiapan","pengiriman","penjualan","pemanasan"],correctAnswer:"persiapan",explanation:"準備=persiapan."},
+{id:"v_26",type:"Kosakata (Arti Kata)",question:"『努力』(doryoku) berarti…",choices:["usaha","kegagalan","kecepatan","budaya"],correctAnswer:"usaha",explanation:"努力=usaha."},
+{id:"v_27",type:"Kosakata (Arti Kata)",question:"『景色』(keshiki) berarti…",choices:["pemandangan","cuaca","cahaya","suara"],correctAnswer:"pemandangan",explanation:"景色=view."},
+{id:"v_28",type:"Kosakata (Arti Kata)",question:"『原因』(gen'in) berarti…",choices:["penyebab","hasil","rencana","waktu"],correctAnswer:"penyebab",explanation:"原因=cause."},
+{id:"v_29",type:"Kosakata (Arti Kata)",question:"『費用』(hiyou) berarti…",choices:["biaya","jarak","nilai","ukuran"],correctAnswer:"biaya",explanation:"費用=biaya."},
+{id:"v_30",type:"Kosakata (Pasangan)",question:"Transitive pasangan『落ちる』?",choices:["落とす","落ちる","落てる","落させる"],correctAnswer:"落とす",explanation:"落ちる(intrans)⇔落とす(trans)."},
+{id:"v_31",type:"Kosakata (Arti Kata)",question:"『関係』(kankei) berarti…",choices:["hubungan","kerusakan","contoh","kebakaran"],correctAnswer:"hubungan",explanation:"関係=relation."},
+{id:"v_32",type:"Kosakata (Katakana)",question:"『テレビ』adalah…",choices:["televisi","teater","tablet","telepon"],correctAnswer:"televisi",explanation:"テレビ=TV."},
+{id:"v_33",type:"Kosakata (Arti Kata)",question:"『追加』(tsuika) berarti…",choices:["tambahan","pengurangan","perubahan","penggantian"],correctAnswer:"tambahan",explanation:"追加=add."},
+{id:"v_34",type:"Kosakata (Arti Kata)",question:"『家庭』(katei) berarti…",choices:["rumah tangga","tempat kerja","sekolah","kantor"],correctAnswer:"rumah tangga",explanation:"家庭=household."},
+{id:"v_35",type:"Kosakata (Arti Kata)",question:"『場合』(baai) berarti…",choices:["kasus","tempat","peralatan","metode"],correctAnswer:"kasus",explanation:"場合=case."},
+{id:"v_36",type:"Kosakata (Arti Kata)",question:"『急行』(kyuukou) berarti…",choices:["kereta ekspres","taksi","bus malam","jalan tol"],correctAnswer:"kereta ekspres",explanation:"急行=express train."},
+{id:"v_37",type:"Kosakata (Arti Kata)",question:"『技術』(gijutsu) berarti…",choices:["teknologi","kantor","musik","ukuran"],correctAnswer:"teknologi",explanation:"技術=teknik/teknologi."},
+{id:"v_38",type:"Kosakata (Arti Kata)",question:"『小説』(shousetsu) berarti…",choices:["novel","puisi","majalah","surat"],correctAnswer:"novel",explanation:"小説=novel."},
+{id:"v_39",type:"Kosakata (Arti Kata)",question:"『説明』(setsumei) berarti…",choices:["penjelasan","pertanyaan","pendapatan","pendidikan"],correctAnswer:"penjelasan",explanation:"説明=penjelasan."},
+{id:"v_40",type:"Kosakata (Katakana)",question:"『ニュース』adalah…",choices:["berita","musik","film","olahraga"],correctAnswer:"berita",explanation:"ニュース=news."},
+{id:"v_41",type:"Kosakata (Arti Kata)",question:"『国際』(kokusai) berarti…",choices:["internasional","nasional","lokal","pemerintah"],correctAnswer:"internasional",explanation:"国際=international."},
+{id:"v_42",type:"Kosakata (Arti Kata)",question:"『文化』(bunka) berarti…",choices:["budaya","ekonomi","politik","hukum"],correctAnswer:"budaya",explanation:"文化=culture."},
+{id:"v_43",type:"Kosakata (Arti Kata)",question:"『成績』(seiseki) berarti…",choices:["nilai","kesan","misi","hasil akhir"],correctAnswer:"nilai",explanation:"成績=score."},
+{id:"v_44",type:"Kosakata (Arti Kata)",question:"『取引』(torihiki) berarti…",choices:["transaksi","perbaikan","pindahan","pariwisata"],correctAnswer:"transaksi",explanation:"取引=deal."},
+{id:"v_45",type:"Kosakata (Arti Kata)",question:"『責任』(sekinin) berarti…",choices:["tanggung jawab","kesempatan","keuntungan","kerugian"],correctAnswer:"tanggung jawab",explanation:"責任=responsibility."},
+{id:"v_46",type:"Kosakata (Arti Kata)",question:"『表現』(hyougen) berarti…",choices:["ekspresi","peraturan","penelitian","perjalanan"],correctAnswer:"ekspresi",explanation:"表現=expression."},
+{id:"v_47",type:"Kosakata (Pasangan)",question:"Intransitif pasangan『壊す』?",choices:["壊れる","割れる","破れる","外れる"],correctAnswer:"壊れる",explanation:"壊す(trans)⇔壊れる(intrans)."},
+{id:"v_48",type:"Kosakata (Arti Kata)",question:"『関東』(kantou) mengacu ke…",choices:["region Tokyo","region Osaka","Hokkaido","Kyushu"],correctAnswer:"region Tokyo",explanation:"関東=wilayah Tokyo&sekitar."},
+{id:"v_49",type:"Kosakata (Arti Kata)",question:"『発表』(happyou) berarti…",choices:["presentasi","perjanjian","pengiriman","penjualan"],correctAnswer:"presentasi",explanation:"発表=presentasi."},
+{id:"v_50",type:"Kosakata (Arti Kata)",question:"『景気』(keiki) berarti…",choices:["kondisi ekonomi","cuaca","pemandangan","energi"],correctAnswer:"kondisi ekonomi",explanation:"景気=economy."},
 
-        function startNewTest() {
-            clearTimer();
-            currentQuestionIndex = 0;
-            score = 0;
-            incorrectAnswers = [];
-            const shuffled = [...allQuizData];
-            shuffle(shuffled);
-            currentTestQuestions = shuffled.slice(0, QUESTIONS_PER_TEST);
-            totalQuestionsInTestEl.textContent = currentTestQuestions.length;
-            quizAreaEl.style.display = 'block';
-            resultsAreaEl.style.display = 'none';
-            reviewAreaEl.style.display = 'none';
-            showQuestion();
-        }
+/* ===== Tata Bahasa 50 ===== */
+{id:"g_01",type:"Tata Bahasa (～ように)",question:"Kalimat ～ように yang benar?",choices:["医者に言われたように、薬を飲みます。","医者に言われように、薬を飲みます。","医者に言われたようで、薬を飲みます。","医者に言われるようだ、薬を飲みます。"],correctAnswer:"医者に言われたように、薬を飲みます。",explanation:"Vた+ように = sesuai…"},
+{id:"g_02",type:"Tata Bahasa (～らしい)",question:"Contoh penggunaan ～らしい dugaan?",choices:["彼は来るらしい。","彼は来るらしいですか。","彼は来るらしいでしょう。","彼は来るらしくて。"],correctAnswer:"彼は来るらしい。",explanation:"普通形+らしい."},
+{id:"g_03",type:"Tata Bahasa (Perintah Kasual)",question:"Perintah kasual『急ぐ』?",choices:["急げ","急ご","急ぎなさい","急がせる"],correctAnswer:"急げ",explanation:"う→え."},
+{id:"g_04",type:"Tata Bahasa (～ておく)",question:"Makna～ておく?",choices:["melakukan persiapan","sedang berlangsung","selesai","boleh"],correctAnswer:"melakukan persiapan",explanation:"～ておく=do in advance."},
+{id:"g_05",type:"Tata Bahasa (～ところ)",question:"V辞書+ところ artinya?",choices:["baru akan","sedang","baru saja","langsung"],correctAnswer:"baru akan",explanation:"Vるところ=akan."},
+{id:"g_06",type:"Tata Bahasa (～ばかり)",question:"『食べたばかり』berarti…",choices:["baru saja makan","akan makan","sedang makan","belum makan"],correctAnswer:"baru saja makan",explanation:"Vたばかり=baru saja."},
+{id:"g_07",type:"Tata Bahasa (～ても)",question:"Penggunaan ～ても menunjukkan…",choices:["kondisi kontras","penyebab","tujuan","urutan"],correctAnswer:"kondisi kontras",explanation:"～ても=meskipun."},
+{id:"g_08",type:"Tata Bahasa (～ようとする)",question:"『出かけようとした』artinya…",choices:["mencoba keluar","harus keluar","boleh keluar","keluar saja"],correctAnswer:"mencoba keluar",explanation:"Vようとする=berusaha."},
+{id:"g_09",type:"Tata Bahasa (～たほうがいい)",question:"Saran sopan: …",choices:["早く寝たほうがいいです。","早く寝るつもりです。","早く寝てみます。","早く寝ることにする。"],correctAnswer:"早く寝たほうがいいです。",explanation:"Vたほうがいい=saran."},
+{id:"g_10",type:"Tata Bahasa (～ことになる)",question:"『明日出張することになりました』menyatakan…",choices:["keputusan pihak luar","keputusan diri","kemungkinan","larangan"],correctAnswer:"keputusan pihak luar",explanation:"～ことになる=decided (outside)."},
+{id:"g_11",type:"Tata Bahasa (～なければならない)",question:"Bentuk singkat ～なければならない?",choices:["なきゃ","なくちゃ","なくては","なく"],correctAnswer:"なきゃ",explanation:"口語: なければ→なきゃ."},
+{id:"g_12",type:"Tata Bahasa (～ようにする)",question:"『毎日運動するようにしています』artinya…",choices:["berusaha rutin olahraga","bisa olahraga","harus olahraga","akan olahraga"],correctAnswer:"berusaha rutin olahraga",explanation:"Vようにしている=habit."},
+{id:"g_13",type:"Tata Bahasa (受身)",question:"受身『犬が私を噛んだ』→…",choices:["私は犬に噛まれた。","私は犬を噛まれた。","犬は私に噛まれた。","犬に私は噛まれた。"],correctAnswer:"私は犬に噛まれた。",explanation:"N1は N2に V受身."},
+{id:"g_14",type:"Tata Bahasa (使役)",question:"使役『子供を遊ばせる』arti…",choices:["membiarkan anak bermain","anak dipaksa","anak membantu","anak dilarang"],correctAnswer:"membiarkan anak bermain",explanation:"Vさせる=make/let."},
+{id:"g_15",type:"Tata Bahasa (～間に)",question:"『留守の間に』…",choices:["selama tidak di rumah","setelah pulang","sebelum pergi","karena rumah"],correctAnswer:"selama tidak di rumah",explanation:"Nの間に=selama."},
+{id:"g_16",type:"Tata Bahasa (比較)",question:"『AはBより高い』arti…",choices:["A lebih tinggi","B lebih tinggi","sama","tak lebih"],correctAnswer:"A lebih tinggi",explanation:"比較構文."},
+{id:"g_17",type:"Tata Bahasa (最上級)",question:"Kata kunci paling…",choices:["一番","たぶん","ずっと","ちょっと"],correctAnswer:"一番",explanation:"一番=most."},
+{id:"g_18",type:"Tata Bahasa (～かもしれない)",question:"Nuansa～かもしれない?",choices:["kemungkinan rendah","pasti","mustahil","selalu"],correctAnswer:"kemungkinan rendah",explanation:"かもしれない=maybe."},
+{id:"g_19",type:"Tata Bahasa (原因)",question:"～ので vs ～から, ～ので lebih…",choices:["objektif","kasual","kuat","perintah"],correctAnswer:"objektif",explanation:"ので=objektif."},
+{id:"g_20",type:"Tata Bahasa (～てもいい)",question:"『入ってもいいですか』menanyakan…",choices:["izin","kemampuan","keharusan","larangan"],correctAnswer:"izin",explanation:"～てもいい？=bolehkah."},
+{id:"g_21",type:"Tata Bahasa (～てはいけない)",question:"Bentuk larangan sopan?",choices:["食べてはいけません","食べないでください","食べちゃだめ","食べな"],correctAnswer:"食べてはいけません",explanation:"～てはいけません=larangan."},
+{id:"g_22",type:"Tata Bahasa (～たことがある)",question:"Fungsi pola ini?",choices:["pengalaman","keharusan","niat","izin"],correctAnswer:"pengalaman",explanation:"Vたことがある=pernah."},
+{id:"g_23",type:"Tata Bahasa (～ながら)",question:"『音楽を聞きながら勉強する』arti…",choices:["belajar sambil musik","setelah musik","karena musik","tanpa musik"],correctAnswer:"belajar sambil musik",explanation:"Vます+ながら=bersamaan."},
+{id:"g_24",type:"Tata Bahasa (～しか～ない)",question:"『千円しかない』arti…",choices:["hanya seribu yen","sekitar","lebih dari","tidak seribu"],correctAnswer:"hanya seribu yen",explanation:"しか～ない=hanya."},
+{id:"g_25",type:"Tata Bahasa (～そうだ)",question:"『雨が降りそうだ』arti…",choices:["sepertinya akan hujan","pasti","menurut kabar","meskipun hujan"],correctAnswer:"sepertinya akan hujan",explanation:"Vます+そうだ=kelihatan."},
+{id:"g_26",type:"Tata Bahasa (～ことができる)",question:"『漢字を書くことができますか』menanyakan…",choices:["kemampuan","izin","kebiasaan","keharusan"],correctAnswer:"kemampuan",explanation:"ことができる=can."},
+{id:"g_27",type:"Tata Bahasa (～ようになる)",question:"『読めるようになった』arti…",choices:["menjadi bisa baca","mencoba baca","tetap baca","mau baca"],correctAnswer:"menjadi bisa baca",explanation:"ようになる=menjadi (perubahan kemampuan)."},
+{id:"g_28",type:"Tata Bahasa (～たところ)",question:"『聞いたところ』arti…",choices:["setelah mendengar","selagi","karena","jika"],correctAnswer:"setelah mendengar",explanation:"Vたところ=setelah."},
+{id:"g_29",type:"Tata Bahasa (敬語)",question:"尊敬語 dari『見る』?",choices:["ご覧になる","見られる","見せる","お見えになる"],correctAnswer:"ご覧になる",explanation:"見る→ご覧になる (sonkeigo)."},
+{id:"g_30",type:"Tata Bahasa (丁寧語)",question:"丁寧語 paling dasar…",choices:["です・ます","だ","である","ござる"],correctAnswer:"です・ます",explanation:"敬体."},
+{id:"g_31",type:"Tata Bahasa (～させていただく)",question:"Nuansa pola ini?",choices:["permisi rendah diri","perintah","dugaan","larangan"],correctAnswer:"permisi rendah diri",explanation:"謙譲語."},
+{id:"g_32",type:"Tata Bahasa (～なら)",question:"Fungsi ～なら?",choices:["syarat berdasarkan info","hasil otomatis","tujuan","perbandingan"],correctAnswer:"syarat berdasarkan info",explanation:"～なら=if (given)."},
+{id:"g_33",type:"Tata Bahasa (～と)",question:"『春になると桜が咲く』arti…",choices:["kalau","agar","setelah","walau"],correctAnswer:"kalau",explanation:"～と=ketika hasil alamiah."},
+{id:"g_34",type:"Tata Bahasa (～までに)",question:"『5時までに帰る』arti…",choices:["sebelum jam 5","sesudah","selama","total"],correctAnswer:"sebelum jam 5",explanation:"～までに=deadline."},
+{id:"g_35",type:"Tata Bahasa (～たり～たり)",question:"Fungsi pola ini?",choices:["daftar aktivitas","perbandingan","larangan","penekanan"],correctAnswer:"daftar aktivitas",explanation:"VたりVたりする."},
+{id:"g_36",type:"Tata Bahasa (～ことにする)",question:"Arti『早く寝ることにした』?",choices:["memutuskan","diharuskan","mencoba","seharusnya"],correctAnswer:"memutuskan",explanation:"V辞書+ことにする=decide."},
+{id:"g_37",type:"Tata Bahasa (～てもらう)",question:"『手伝ってもらいました』menyatakan…",choices:["menerima bantuan","memberi bantuan","izin","rencana"],correctAnswer:"menerima bantuan",explanation:"～てもらう=receive action."},
+{id:"g_38",type:"Tata Bahasa (～させられる)",question:"Bentuk pasif‑kause『食べる』?",choices:["食べさせられる","食べられる","食べさせる","食べされる"],correctAnswer:"食べさせられる",explanation:"Grup2."},
+{id:"g_39",type:"Tata Bahasa (～わけではない)",question:"『高いわけではない』arti…",choices:["tidak selalu mahal","pasti mahal","sangat mahal","mungkin mahal"],correctAnswer:"tidak selalu mahal",explanation:"～わけではない=not necessarily."},
+{id:"g_40",type:"Tata Bahasa (～ほど～ない)",question:"『僕は君ほど強くない』arti…",choices:["tidak sekuat kamu","lebih kuat","sama","tidak kuat"],correctAnswer:"tidak sekuat kamu",explanation:"AほどBない."},
+{id:"g_41",type:"Tata Bahasa (～によると)",question:"Fungsi pola ini?",choices:["menyatakan sumber info","perbandingan","tujuan","cara"],correctAnswer:"menyatakan sumber info",explanation:"～によると=menurut."},
+{id:"g_42",type:"Tata Bahasa (～てもらえませんか)",question:"Polite request?",choices:["見せてもらえませんか","見せてもいいですか","見せてください","見せたほうがいいです"],correctAnswer:"見せてもらえませんか",explanation:"てもらえませんか=Could you."},
+{id:"g_43",type:"Tata Bahasa (～うちに)",question:"『若いうちに』arti…",choices:["selagi muda","setelah","karena","walau"],correctAnswer:"selagi muda",explanation:"Nのうちに=selagi."},
+{id:"g_44",type:"Tata Bahasa (～たがる)",question:"『子供が遊びたがる』arti…",choices:["anak ingin bermain","meminta bermain","mungkin bermain","dibiarkan bermain"],correctAnswer:"anak ingin bermain",explanation:"第三者 + Vたがる."},
+{id:"g_45",type:"Tata Bahasa (～ことはない)",question:"Makna pola ini?",choices:["tidak perlu","harus","boleh","tidak mungkin"],correctAnswer:"tidak perlu",explanation:"V辞書+ことはない=no need."},
+{id:"g_46",type:"Tata Bahasa (～さえ)",question:"『水さえあれば』arti…",choices:["bahkan air saja","hanya air","tanpa air","air tidak"],correctAnswer:"bahkan air saja",explanation:"さえ=bahkan."},
+{id:"g_47",type:"Tata Bahasa (～ほど)",question:"『泣きたいほど嬉しい』arti…",choices:["hingga ingin menangis","jarang","mungkin","hampir"],correctAnswer:"hingga ingin menangis",explanation:"～ほど=hingga."},
+{id:"g_48",type:"Tata Bahasa (～ずに)",question:"『言わずに帰った』arti…",choices:["pulang tanpa bilang","pulang setelah bilang","sedang bilang","seolah"],correctAnswer:"pulang tanpa bilang",explanation:"Vないで→Vずに."},
+{id:"g_49",type:"Tata Bahasa (～おかげで)",question:"Fungsi pola ini?",choices:["hasil positif","hasil negatif","perbandingan","tujuan"],correctAnswer:"hasil positif",explanation:"おかげで=karenanya (baik)."},
+{id:"g_50",type:"Tata Bahasa (～ところだった)",question:"『遅れるところだった』arti…",choices:["hampir terlambat","sudah","masih","akan"],correctAnswer:"hampir terlambat",explanation:"Vところだった=almost."}
+];
 
-        function showQuestion() {
-            clearTimer();
-            feedbackAreaEl.innerHTML = '';
-            nextQuestionButtonEl.style.display = 'none';
-            if (currentQuestionIndex >= currentTestQuestions.length) { return showResults(); }
-            const q = currentTestQuestions[currentQuestionIndex];
-            questionCounterEl.textContent = `Pertanyaan ${currentQuestionIndex + 1} dari ${currentTestQuestions.length}`;
-            questionTypeEl.textContent = q.type;
-            let qHTML = /[一-龯ぁ-んァ-ン]/.test(q.question) ? `<span class="japanese-text">${q.question}</span>` : q.question;
-            if (q.question_translation) qHTML += `<br><span class="text-sm text-gray-500 italic japanese-text">${q.question_translation}</span>`;
-            questionTextEl.innerHTML = qHTML;
-            choicesAreaEl.innerHTML = '';
-            const choices = [...q.choices]; shuffle(choices);
-            choices.forEach(choice => {
-                const btn = document.createElement('button');
-                btn.className = 'choice-button';
-                btn.innerHTML = /[一-龯ぁ-んァ-ン]/.test(choice) ? `<span class="japanese-text">${choice}</span>` : choice;
-                btn.onclick = () => selectAnswer(choice, btn, q);
-                choicesAreaEl.appendChild(btn);
-            });
-        }
+/* ========= Logic ========= */
+const allQuizData=[...baseQuizData,...additionalQuizData];
+let idx=0,score=0,incorrect=[];
+const Q_PER_TEST=10;
+let timer=null;
+const $=s=>document.querySelector(s);
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}};
+const clearTimer=()=>{if(timer){clearTimeout(timer);timer=null;}}
 
-        function selectAnswer(choice, btn, q) {
-            clearTimer();
-            [...choicesAreaEl.querySelectorAll('button')].forEach(b => {
-                const txt = b.textContent.trim();
-                if (txt === q.correctAnswer) b.classList.add('correct');
-                b.disabled = true;
-            });
-            const isCorrect = choice === q.correctAnswer;
-            if (isCorrect) { score++; btn.classList.add('correct'); }
-            else { btn.classList.add('incorrect','selected-by-user'); incorrectAnswers.push({ ...q, userAnswer: choice }); }
-            feedbackAreaEl.innerHTML = `<div class="feedback ${isCorrect? 'correct':'incorrect'}"><p class="font-semibold">${isCorrect?'Benar!':'Salah.'}</p><p class="mt-1 text-sm">${isCorrect?'':'Jawaban benar: <strong class="japanese-text">'+q.correctAnswer+'</strong><br>'}${q.explanation}</p></div>`;
-            autoAdvanceTimer = setTimeout(() => { currentQuestionIndex++; showQuestion(); }, 3000);
-        }
+const quizArea=$('#quiz-area'),results=$('#results-area'),review=$('#review-area');
+const qCounter=$('#question-counter'),qType=$('#question-type'),qText=$('#question-text'),choicesArea=$('#choices-area'),feedback=$('#feedback-area');
+const scoreEl=$('#score'),totalEl=$('#total-questions-in-test'),resultMsg=$('#result-message');
+const reviewBtn=$('#review-incorrect-button'),newBtn=$('#new-test-button'),reviewContent=$('#review-content');
 
-        function showResults() {
-            quizAreaEl.style.display = 'none';
-            resultsAreaEl.style.display = 'block';
-            scoreEl.textContent = score;
-            const pct = (score / currentTestQuestions.length) * 100;
-            resultMessageEl.textContent = pct===100? 'Luar biasa! Anda sempurna!': pct>=70? 'Bagus sekali! Teruslah berlatih.': pct>=50? 'Cukup bagus, masih bisa ditingkatkan.': 'Jangan menyerah! Coba lagi.';
-            reviewIncorrectButtonEl.style.display = incorrectAnswers.length? 'inline-block':'none';
-        }
+function start(){clearTimer();idx=0;score=0;incorrect=[];const list=[...allQuizData];shuffle(list);current=list.slice(0,Q_PER_TEST);totalEl.textContent=current.length;quizArea.style.display='block';results.style.display='none';review.style.display='none';show();}
+let current=[];
+function show(){clearTimer();if(idx>=current.length){return showResult();}const q=current[idx];qCounter.textContent=`Pertanyaan ${idx+1}/${current.length}`;qType.textContent=q.type;qText.innerHTML= /[一-龯ぁ-んァ-ン]/.test(q.question)?`<span class="japanese-text">${q.question}</span>`:q.question;if(q.question_translation){qText.innerHTML+='<br><span class="text-sm text-gray-500">'+q.question_translation+'</span>';}choicesArea.innerHTML='';const opts=[...q.choices];shuffle(opts);opts.forEach(c=>{const b=document.createElement('button');b.className='choice-button';b.innerHTML=/[一-龯ぁ-んァ-ン]/.test(c)?`<span class="japanese-text">${c}</span>`:c;b.onclick=()=>select(c.trim(),b,q);choicesArea.appendChild(b);});feedback.innerHTML='';}
+function select(ans,btn,q){clearTimer();choicesArea.querySelectorAll('button').forEach(b=>{b.disabled=true;if(b.textContent.trim()===q.correctAnswer)b.classList.add('correct');});let html='';if(ans===q.correctAnswer){score++;btn.classList.add('correct');html=`<div class="feedback correct"><p class="font-semibold">Benar!</p><p class="text-sm">${q.explanation}</p></div>`;}else{btn.classList.add('incorrect','selected-by-user');incorrect.push({...q,userAnswer:ans});html=`<div class="feedback incorrect"><p class="font-semibold">Salah.</p><p class="text-sm">Jawaban benar: <strong>${q.correctAnswer}</strong></p><p class="text-sm">${q.explanation}</p></div>`;}feedback.innerHTML=html;timer=setTimeout(()=>{idx++;show();},2000);}
+function showResult(){quizArea.style.display='none';results.style.display='block';scoreEl.textContent=score;const pct=score/current.length*100;resultMsg.textContent=pct===100?'Sempurna!':pct>=70?'Bagus sekali!':pct>=50?'Cukup, terus belajar!':'Coba lagi.';reviewBtn.style.display=incorrect.length?'inline-block':'none';}
+function showReview(){results.style.display='none';review.style.display='block';reviewContent.innerHTML='';if(!incorrect.length){reviewContent.textContent='Semua jawaban benar!';return;}incorrect.forEach((it,i)=>{reviewContent.innerHTML+=`<div class="review-item bg-white p-4 rounded-lg shadow"><p class="text-sm text-gray-500">No.${i+1}</p><p class="font-semibold">${it.type}</p><p>${it.question}</p><p class="mt-2">Jawaban Anda: <span class="text-red-600">${it.userAnswer}</span></p><p>Jawaban Benar: <span class="text-green-600 font-bold">${it.correctAnswer}</span></p><div class="review-feedback correct mt-2"><p class="font-semibold">Penjelasan:</p><p class="text-sm">${it.explanation}</p></div></div>`;});}
+newBtn.onclick=start;reviewBtn.onclick=showReview;$('#back-to-results-button').onclick=()=>{review.style.display='none';results.style.display='block';};$('#start-new-test-from-review-button').onclick=start;
 
-        function showReview() {
-            resultsAreaEl.style.display = 'none';
-            reviewAreaEl.style.display = 'block';
-            reviewContentEl.innerHTML = '';
-            if (!incorrectAnswers.length) { reviewContentEl.innerHTML = '<p class="text-center text-gray-600">Tidak ada jawaban salah. Mantap!</p>'; return; }
-            incorrectAnswers.forEach((item,i)=>{
-                const userHTML = /[一-龯ぁ-んァ-ン]/.test(item.userAnswer)? `<span class="japanese-text font-medium text-red-600">${item.userAnswer}</span>`: `<span class="font-medium text-red-600">${item.userAnswer}</span>`;
-                const correctHTML = /[一-龯ぁ-んァ-ン]/.test(item.correctAnswer)? `<strong class="japanese-text font-medium text-green-600">${item.correctAnswer}</strong>`: `<strong class="font-medium text-green-600">${item.correctAnswer}</strong>`;
-                reviewContentEl.innerHTML += `<div class="review-item bg-white p-4 rounded-lg shadow"><p class="text-sm text-gray-500">Pertanyaan ${i+1}</p><p class="font-semibold text-gray-700">${item.type}</p><p class="text-gray-800 mt-1">${item.question}</p><p class="mt-2">Pilihan Anda: ${userHTML}</p><p>Jawaban Benar: ${correctHTML}</p><div class="review-feedback correct mt-2"><p class="font-semibold">Penjelasan:</p><p class="text-sm">${item.explanation}</p></div></div>`;
-            });
-        }
-
-        // === EVENT LISTENERS ===
-        newTestButtonEl.onclick = startNewTest;
-        reviewIncorrectButtonEl.onclick = showReview;
-        backToResultsButtonEl.onclick = () => { resultsAreaEl.style.display='block'; reviewAreaEl.style.display='none'; };
-        startNewTestFromReviewButtonEl.onclick = startNewTest;
-        nextQuestionButtonEl.onclick = () => { currentQuestionIndex++; showQuestion(); };
-
-        // Start pertama kali
-        startNewTest();
-    </script>
+start();
+</script>
 </body>
 </html>
