@@ -3,181 +3,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kuis Bahasa Jepang (JLPT N3) - 110 Soal Acak, Pilihan Acak, Otomatis & Ulasan</title>
+    <title>Kuis Bahasa Jepang (JLPT N3) - 10 Soal Acak, Pilihan Acak, Otomatis & Ulasan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body{font-family:'Inter',sans-serif;}
-        .quiz-container{max-width:700px;margin:2rem auto;padding:2rem;background:#f9fafb;border-radius:0.75rem;box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05);}
-        .question-header,.review-item{border-bottom:1px solid #e5e7eb;padding-bottom:1rem;margin-bottom:1.5rem;}
-        .choice-button{display:block;width:100%;text-align:left;padding:.75rem 1rem;margin-bottom:.75rem;border:1px solid #d1d5db;border-radius:.5rem;background:#fff;transition:.3s;}
-        .choice-button:hover:not(:disabled){background:#f3f4f6;}
-        .choice-button.correct{background:#d1fae5!important;border-color:#6ee7b7!important;color:#065f46!important}
-        .choice-button.incorrect{background:#fee2e2!important;border-color:#fca5a5!important;color:#991b1b!important}
-        .choice-button.selected-by-user{border-width:2px;border-color:#fbbf24}
-        .feedback,.review-feedback{padding:1rem;margin-top:1.5rem;border-radius:.5rem;}
-        .feedback.correct{background:#ecfdf5;color:#065f46}
-        .feedback.incorrect{background:#fef2f2;color:#991b1b}
-        .action-button{padding:.75rem 1.5rem;border-radius:.5rem;font-weight:600;transition:.3s;cursor:pointer}
-        .next-button{background:#3b82f6;color:#fff}.next-button:hover{background:#2563eb}
-        .restart-button{background:#10b981;color:#fff}.restart-button:hover{background:#059669}
-        .review-button{background:#f59e0b;color:#fff}.review-button:hover{background:#d97706}
-        .japanese-text{font-family:'Hiragino Kaku Gothic ProN','メイリオ',Meiryo,sans-serif;}
-        .review-item p{margin-bottom:.5rem}
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .quiz-container {
+            max-width: 700px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #f9fafb;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .question-header, .review-item {
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .choice-button {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            background-color: #ffffff;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .choice-button:hover:not(:disabled) { background-color: #f3f4f6; }
+        .choice-button.correct { background-color: #d1fae5 !important; border-color: #6ee7b7 !important; color: #065f46 !important; }
+        .choice-button.incorrect { background-color: #fee2e2 !important; border-color: #fca5a5 !important; color: #991b1b !important; }
+        .choice-button.selected-by-user { border-width: 2px; border-color: #fbbf24; }
+        .feedback, .review-feedback { padding: 1rem; margin-top: 1.5rem; border-radius: 0.5rem; }
+        .feedback.correct { background-color: #ecfdf5; color: #065f46; }
+        .feedback.incorrect { background-color: #fef2f2; color: #991b1b; }
+        .action-button { padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; transition: background-color 0.3s; cursor: pointer; }
+        .next-button { background-color: #3b82f6; color: white; }
+        .next-button:hover { background-color: #2563eb; }
+        .restart-button { background-color: #10b981; color: white; }
+        .restart-button:hover { background-color: #059669; }
+        .review-button { background-color: #f59e0b; color: white; }
+        .review-button:hover { background-color: #d97706; }
+        .japanese-text { font-family: 'Hiragino Kaku Gothic ProN', 'メイリオ', Meiryo, sans-serif; }
+        .review-item p { margin-bottom: 0.5rem; }
     </style>
 </head>
 <body class="bg-gray-100">
-<div class="quiz-container">
-    <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">Kuis Bahasa Jepang (JLPT N3)</h1>
-    <div id="quiz-area">
-        <div class="question-header">
-            <p class="text-sm text-gray-500 mb-1" id="question-counter"></p>
-            <h2 class="text-xl font-semibold text-gray-700" id="question-type"></h2>
-            <p class="text-lg text-gray-800 mt-2" id="question-text"></p>
+    <div class="quiz-container">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">Kuis Bahasa Jepang (JLPT N3)</h1>
+        <div id="quiz-area">
+            <div class="question-header">
+                <p class="text-sm text-gray-500 mb-1" id="question-counter"></p>
+                <h2 class="text-xl font-semibold text-gray-700" id="question-type"></h2>
+                <p class="text-lg text-gray-800 mt-2" id="question-text"></p>
+            </div>
+            <div id="choices-area" class="grid grid-cols-1 gap-y-3"></div>
+            <div id="feedback-area" class="mt-6"></div>
+            <div class="mt-8 text-right">
+                <button id="next-question-button" class="action-button next-button" style="display: none;">Pertanyaan Berikutnya Manual</button>
+            </div>
         </div>
-        <div id="choices-area" class="grid grid-cols-1 gap-y-3"></div>
-        <div id="feedback-area" class="mt-6"></div>
-    </div>
-    <div id="results-area" style="display:none" class="text-center">
-        <h2 class="text-2xl font-bold text-gray-800 mb-4">Hasil Tes</h2>
-        <p class="text-xl text-gray-700 mb-2">Anda menjawab dengan benar <span id="score" class="font-bold">0</span> dari <span id="total-questions-in-test" class="font-bold">10</span> pertanyaan.</p>
-        <p class="text-lg text-gray-600 mb-6" id="result-message"></p>
-        <div class="flex flex-col sm:flex-row justify-center gap-4 mt-4">
-            <button id="review-incorrect-button" class="action-button review-button" style="display:none">Ulas Jawaban Salah</button>
-            <button id="new-test-button" class="action-button restart-button">Mulai Tes Baru</button>
+        <div id="results-area" style="display: none;" class="text-center">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Hasil Tes</h2>
+            <p class="text-xl text-gray-700 mb-2">Anda menjawab dengan benar <span id="score" class="font-bold">0</span> dari <span id="total-questions-in-test" class="font-bold">10</span> pertanyaan.</p>
+            <p class="text-lg text-gray-600 mb-6" id="result-message"></p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mt-4">
+                <button id="review-incorrect-button" class="action-button review-button" style="display: none;">Ulas Jawaban Salah</button>
+                <button id="new-test-button" class="action-button restart-button">Mulai Tes Baru (10 Pertanyaan)</button>
+            </div>
+        </div>
+        <div id="review-area" style="display: none;">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Ulasan Jawaban Salah</h2>
+            <div id="review-content" class="space-y-6"></div>
+            <div class="mt-8 text-center">
+                <button id="back-to-results-button" class="action-button next-button">Kembali ke Hasil</button>
+                <button id="start-new-test-from-review-button" class="action-button restart-button ml-4">Mulai Tes Baru</button>
+            </div>
         </div>
     </div>
-    <div id="review-area" style="display:none">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Ulasan Jawaban Salah</h2>
-        <div id="review-content" class="space-y-6"></div>
-        <div class="mt-8 text-center">
-            <button id="back-to-results-button" class="action-button next-button">Kembali ke Hasil</button>
-            <button id="start-new-test-from-review-button" class="action-button restart-button ml-4">Mulai Tes Baru</button>
-        </div>
-    </div>
-</div>
-<script>
-/* === Data Quiz (dipotong ringkas: tambahkan soal Anda di sini) === */
-const baseQuizData=[{id:"b1",type:"Kanji",question:"山 の くんよみ は？",choices:["やま","かわ","もり","うみ"],correctAnswer:"やま",explanation:"山 dibaca やま dalam kun'yomi."}];
-const additionalQuizData=[{id:"a1",type:"Kosakata",question:"水 は 何 です か？",choices:["air","api","tanah","angin"],correctAnswer:"air",explanation:"水 berarti air."}];
-const allQuizData=[...baseQuizData,...additionalQuizData];
 
-/* === State === */
-let currentTestQuestions=[],incorrectAnswers=[];
-let currentQuestionIndex=0,score=0;
-const QUESTIONS_PER_TEST=10;
-let autoTimer=null;
+    <script>
+        // === DATA SOAL ===
+        const baseQuizData = [
+            { id:"q1", type:"Membaca Kanji (漢字の読み方)", question:"この本は、駅前の店で簡単に<u>手</u>に入ります。", question_translation:"Kono hon wa, ekimae no mise de kantan ni <u>te</u> ni hairimasu.", choices:["ち","しゅ","て","す"], correctAnswer:"て", explanation:"『手に入る』 dibaca 'te ni hairu'." },
+            { id:"q2", type:"Memilih Kanji yang Tepat (適切な漢字選び)", question:"新しいエアコンの<u>せっち</u>工事は明日です。", question_translation:"Atarashii eakon no <u>secchi</u> kouji wa ashita desu.", choices:["設地","設置","説地","説置"], correctAnswer:"設置", explanation:"せっち → 設置." },
+            { id:"q3", type:"Memilih Kosakata yang Tepat (適切な語彙選択)", question:"会議の時間は急に（　　　）されました。", question_translation:"Kaigi no jikan wa kyuu ni (　　　) saremashita.", choices:["変化","変更","交換","移動"], correctAnswer:"変更", explanation:"変更 (henkou) = perubahan jadwal." },
+            { id:"q4", type:"Mengganti Kata/Frasa (言葉の言い換え)", question:"日本での生活に<u>だんだん</u>慣れてきました。", question_translation:"Nihon deno seikatsu ni <u>dandan</u> narete kimashita.", choices:["ほとんど","いつも","とうとう","少しずつ"], correctAnswer:"少しずつ", explanation:"だんだん = 少しずつ (perlahan‑lahan)." },
+            { id:"q5", type:"Penggunaan Kata (言葉の使い方)", question:"Pilih kalimat di mana kata 'めったに' digunakan dengan benar.", choices:["彼はめったに遅刻しません。","この本はめったに面白いです。","めったに頑張れば、成功できます。","昨日はめったに雨が降りました。"], correctAnswer:"彼はめったに遅刻しません。", explanation:"めったに + bentuk negatif." },
+            { id:"q6", type:"Tata Bahasa - Pilihan Partikel", question:"昨日、友達（　　　）映画を見に行きました。", question_translation:"Kinou, tomodachi (　　　) eiga o mi ni ikimashita.", choices:["を","に","と","で"], correctAnswer:"と", explanation:"と → bersama." },
+            { id:"q7", type:"Kosakata - Makna Kontekstual", question:"この問題は（　　　）なので、もう少しヒントをください。", question_translation:"Kono mondai wa (　　　) nanode, mou sukoshi hinto o kudasai.", choices:["かんたん","ふくざつ","べんり","あんぜん"], correctAnswer:"ふくざつ", explanation:"ふくざつ = rumit." },
+            { id:"q8", type:"Membaca Kanji", question:"将来、医者になるのが彼の<u>夢</u>です。", question_translation:"Shourai, isha ni naru no ga kare no <u>yume</u> desu.", choices:["ゆめ","むゆ","ゆむ","めゆ"], correctAnswer:"ゆめ", explanation:"夢 dibaca 'yume'." },
+            { id:"q9", type:"Tata Bahasa - Konjugasi Kata Kerja", question:"図書館では静かに本を（　　　）ください。", question_translation:"Toshokan dewa shizuka ni hon o (　　　) kudasai.", choices:["読みます","読んで","読むの","読めば"], correctAnswer:"読んで", explanation:"～てください bentuk permintaan." },
+            { id:"q10", type:"Tata Bahasa - Struktur Kalimat", question:"Urutkan: 「きのう / とても / 映画は / 面白かったです」", choices:["きのう とても 映画は 面白かったです","映画は きのう とても 面白かったです","とても きのう 映画は 面白かったです","面白かったです きのう とても 映画は"], correctAnswer:"映画は きのう とても 面白かったです", explanation:"Subjek → keterangan → predikat." }
+        ];
+        // Tambahan soal kosong (bisa diisi nanti)
+        const additionalQuizData = [];
+        const allQuizData = [...baseQuizData, ...additionalQuizData];
 
-/* === Elements === */
-const quizAreaEl=document.getElementById('quiz-area');
-const resultsAreaEl=document.getElementById('results-area');
-const reviewAreaEl=document.getElementById('review-area');
-const questionCounterEl=document.getElementById('question-counter');
-const questionTypeEl=document.getElementById('question-type');
-const questionTextEl=document.getElementById('question-text');
-const choicesAreaEl=document.getElementById('choices-area');
-const feedbackAreaEl=document.getElementById('feedback-area');
-const scoreEl=document.getElementById('score');
-const totalQuestionsEl=document.getElementById('total-questions-in-test');
-const resultMsgEl=document.getElementById('result-message');
-const reviewBtn=document.getElementById('review-incorrect-button');
-const newTestBtn=document.getElementById('new-test-button');
-const reviewContentEl=document.getElementById('review-content');
-const backBtn=document.getElementById('back-to-results-button');
-const startFromReviewBtn=document.getElementById('start-new-test-from-review-button');
+        // === STATE ===
+        let currentTestQuestions = [];
+        let incorrectAnswers = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const QUESTIONS_PER_TEST = 10;
+        let autoAdvanceTimer = null;
 
-/* === Utils === */
-const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}};
-const clearTimer=()=>{if(autoTimer){clearTimeout(autoTimer);autoTimer=null;}}
+        // === ELEMENTS ===
+        const quizAreaEl = document.getElementById('quiz-area');
+        const resultsAreaEl = document.getElementById('results-area');
+        const reviewAreaEl = document.getElementById('review-area');
+        const questionCounterEl = document.getElementById('question-counter');
+        const questionTypeEl = document.getElementById('question-type');
+        const questionTextEl = document.getElementById('question-text');
+        const choicesAreaEl = document.getElementById('choices-area');
+        const feedbackAreaEl = document.getElementById('feedback-area');
+        const nextQuestionButtonEl = document.getElementById('next-question-button');
+        const scoreEl = document.getElementById('score');
+        const totalQuestionsInTestEl = document.getElementById('total-questions-in-test');
+        const resultMessageEl = document.getElementById('result-message');
+        const reviewIncorrectButtonEl = document.getElementById('review-incorrect-button');
+        const newTestButtonEl = document.getElementById('new-test-button');
+        const reviewContentEl = document.getElementById('review-content');
+        const backToResultsButtonEl = document.getElementById('back-to-results-button');
+        const startNewTestFromReviewButtonEl = document.getElementById('start-new-test-from-review-button');
 
-/* === Quiz Flow === */
-function startNewTest(){
-  clearTimer();
-  if(allQuizData.length===0){alert('データがありません。問題を追加してください。');return;}
-  currentQuestionIndex=0;score=0;incorrectAnswers=[];
-  const shuffled=[...allQuizData];shuffle(shuffled);
-  const numQ=Math.min(QUESTIONS_PER_TEST,shuffled.length);
-  currentTestQuestions=shuffled.slice(0,numQ);
-  console.table(currentTestQuestions);
-  totalQuestionsEl.textContent=currentTestQuestions.length;
-  quizAreaEl.style.display='block';resultsAreaEl.style.display='none';reviewAreaEl.style.display='none';
-  displayQuestion();
-}
+        // === FUNCTIONS ===
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+        function clearTimer() { if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; } }
 
-function displayQuestion(){
-  clearTimer();
-  feedbackAreaEl.innerHTML='';
-  if(currentQuestionIndex>=currentTestQuestions.length){return showResults();}
-  const q=currentTestQuestions[currentQuestionIndex];
-  questionCounterEl.textContent=`Pertanyaan ${currentQuestionIndex+1}/${currentTestQuestions.length}`;
-  questionTypeEl.textContent=q.type;
-  questionTextEl.innerHTML=/[一-龯ぁ-んァ-ン]/.test(q.question)?`<span class="japanese-text">${q.question}</span>`:q.question;
-  choicesAreaEl.innerHTML='';
-  const opts=[...q.choices];shuffle(opts);
-  opts.forEach(c=>{
-    const btn=document.createElement('button');
-    btn.className='choice-button';
-    btn.innerHTML=/[一-龯ぁ-んァ-ン]/.test(c)?`<span class="japanese-text">${c}</span>`:c;
-    btn.onclick=()=>selectAnswer(c.trim(),btn,q);
-    choicesAreaEl.appendChild(btn);
-  });
-}
+        function startNewTest() {
+            clearTimer();
+            currentQuestionIndex = 0;
+            score = 0;
+            incorrectAnswers = [];
+            const shuffled = [...allQuizData];
+            shuffle(shuffled);
+            currentTestQuestions = shuffled.slice(0, QUESTIONS_PER_TEST);
+            totalQuestionsInTestEl.textContent = currentTestQuestions.length;
+            quizAreaEl.style.display = 'block';
+            resultsAreaEl.style.display = 'none';
+            reviewAreaEl.style.display = 'none';
+            showQuestion();
+        }
 
-function selectAnswer(sel,btn,q){
-  clearTimer();
-  const buttons=choicesAreaEl.querySelectorAll('button');
-  buttons.forEach(b=>{
-    b.disabled=true;
-    const t=b.textContent.trim();
-    if(t===q.correctAnswer) b.classList.add('correct');
-  });
-  let html='';
-  if(sel===q.correctAnswer){
-    score++;btn.classList.add('correct');
-    html=`<div class="feedback correct"><p class="font-semibold">Benar!</p><p class="text-sm mt-1">${q.explanation}</p></div>`;
-  }else{
-    btn.classList.add('incorrect','selected-by-user');
-    incorrectAnswers.push({...q,userAnswer:sel});
-    html=`<div class="feedback incorrect"><p class="font-semibold">Salah.</p><p class="text-sm">Jawaban benar: <strong>${q.correctAnswer}</strong></p><p class="text-sm mt-1">${q.explanation}</p></div>`;
-  }
-  feedbackAreaEl.innerHTML=html;
-  autoTimer=setTimeout(()=>{currentQuestionIndex++;displayQuestion();},2000);
-}
+        function showQuestion() {
+            clearTimer();
+            feedbackAreaEl.innerHTML = '';
+            nextQuestionButtonEl.style.display = 'none';
+            if (currentQuestionIndex >= currentTestQuestions.length) { return showResults(); }
+            const q = currentTestQuestions[currentQuestionIndex];
+            questionCounterEl.textContent = `Pertanyaan ${currentQuestionIndex + 1} dari ${currentTestQuestions.length}`;
+            questionTypeEl.textContent = q.type;
+            let qHTML = /[一-龯ぁ-んァ-ン]/.test(q.question) ? `<span class="japanese-text">${q.question}</span>` : q.question;
+            if (q.question_translation) qHTML += `<br><span class="text-sm text-gray-500 italic japanese-text">${q.question_translation}</span>`;
+            questionTextEl.innerHTML = qHTML;
+            choicesAreaEl.innerHTML = '';
+            const choices = [...q.choices]; shuffle(choices);
+            choices.forEach(choice => {
+                const btn = document.createElement('button');
+                btn.className = 'choice-button';
+                btn.innerHTML = /[一-龯ぁ-んァ-ン]/.test(choice) ? `<span class="japanese-text">${choice}</span>` : choice;
+                btn.onclick = () => selectAnswer(choice, btn, q);
+                choicesAreaEl.appendChild(btn);
+            });
+        }
 
-function showResults(){
-  quizAreaEl.style.display='none';resultsAreaEl.style.display='block';
-  scoreEl.textContent=score;
-  const pct=score/currentTestQuestions.length*100;
-  resultMsgEl.textContent=pct===100?'Luar biasa!':
-    pct>=70?'Bagus sekali!':
-    pct>=50?'Cukup bagus, teruslah berlatih.':'Jangan menyerah! Coba lagi.';
-  reviewBtn.style.display=incorrectAnswers.length?'inline-block':'none';
-}
+        function selectAnswer(choice, btn, q) {
+            clearTimer();
+            [...choicesAreaEl.querySelectorAll('button')].forEach(b => {
+                const txt = b.textContent.trim();
+                if (txt === q.correctAnswer) b.classList.add('correct');
+                b.disabled = true;
+            });
+            const isCorrect = choice === q.correctAnswer;
+            if (isCorrect) { score++; btn.classList.add('correct'); }
+            else { btn.classList.add('incorrect','selected-by-user'); incorrectAnswers.push({ ...q, userAnswer: choice }); }
+            feedbackAreaEl.innerHTML = `<div class="feedback ${isCorrect? 'correct':'incorrect'}"><p class="font-semibold">${isCorrect?'Benar!':'Salah.'}</p><p class="mt-1 text-sm">${isCorrect?'':'Jawaban benar: <strong class="japanese-text">'+q.correctAnswer+'</strong><br>'}${q.explanation}</p></div>`;
+            autoAdvanceTimer = setTimeout(() => { currentQuestionIndex++; showQuestion(); }, 3000);
+        }
 
-function showReview(){
-  resultsAreaEl.style.display='none';reviewAreaEl.style.display='block';
-  reviewContentEl.innerHTML='';
-  if(!incorrectAnswers.length){reviewContentEl.textContent='Semua jawaban benar!';return;}
-  incorrectAnswers.forEach((it,i)=>{
-    reviewContentEl.innerHTML+=`<div class="review-item bg-white p-4 rounded-lg shadow">
-      <p class="text-sm text-gray-500">No.${i+1}</p>
-      <p class="font-semibold">${it.type}</p>
-      <p>${it.question}</p>
-      <p class="mt-2">Anda: <span class="text-red-600">${it.userAnswer}</span></p>
-      <p>Benar: <span class="text-green-600 font-bold">${it.correctAnswer}</span></p>
-      <div class="review-feedback correct mt-2"><p class="font-semibold">Penjelasan:</p><p class="text-sm">${it.explanation}</p></div>
-    </div>`;
-  });
-}
+        function showResults() {
+            quizAreaEl.style.display = 'none';
+            resultsAreaEl.style.display = 'block';
+            scoreEl.textContent = score;
+            const pct = (score / currentTestQuestions.length) * 100;
+            resultMessageEl.textContent = pct===100? 'Luar biasa! Anda sempurna!': pct>=70? 'Bagus sekali! Teruslah berlatih.': pct>=50? 'Cukup bagus, masih bisa ditingkatkan.': 'Jangan menyerah! Coba lagi.';
+            reviewIncorrectButtonEl.style.display = incorrectAnswers.length? 'inline-block':'none';
+        }
 
-/* === Events === */
-newTestBtn.onclick=startNewTest;
-reviewBtn.onclick=showReview;
-backBtn.onclick=()=>{reviewAreaEl.style.display='none';resultsAreaEl.style.display='block';};
-startFromReviewBtn.onclick=startNewTest;
+        function showReview() {
+            resultsAreaEl.style.display = 'none';
+            reviewAreaEl.style.display = 'block';
+            reviewContentEl.innerHTML = '';
+            if (!incorrectAnswers.length) { reviewContentEl.innerHTML = '<p class="text-center text-gray-600">Tidak ada jawaban salah. Mantap!</p>'; return; }
+            incorrectAnswers.forEach((item,i)=>{
+                const userHTML = /[一-龯ぁ-んァ-ン]/.test(item.userAnswer)? `<span class="japanese-text font-medium text-red-600">${item.userAnswer}</span>`: `<span class="font-medium text-red-600">${item.userAnswer}</span>`;
+                const correctHTML = /[一-龯ぁ-んァ-ン]/.test(item.correctAnswer)? `<strong class="japanese-text font-medium text-green-600">${item.correctAnswer}</strong>`: `<strong class="font-medium text-green-600">${item.correctAnswer}</strong>`;
+                reviewContentEl.innerHTML += `<div class="review-item bg-white p-4 rounded-lg shadow"><p class="text-sm text-gray-500">Pertanyaan ${i+1}</p><p class="font-semibold text-gray-700">${item.type}</p><p class="text-gray-800 mt-1">${item.question}</p><p class="mt-2">Pilihan Anda: ${userHTML}</p><p>Jawaban Benar: ${correctHTML}</p><div class="review-feedback correct mt-2"><p class="font-semibold">Penjelasan:</p><p class="text-sm">${item.explanation}</p></div></div>`;
+            });
+        }
 
-/* Init */
-startNewTest();
-</script>
+        // === EVENT LISTENERS ===
+        newTestButtonEl.onclick = startNewTest;
+        reviewIncorrectButtonEl.onclick = showReview;
+        backToResultsButtonEl.onclick = () => { resultsAreaEl.style.display='block'; reviewAreaEl.style.display='none'; };
+        startNewTestFromReviewButtonEl.onclick = startNewTest;
+        nextQuestionButtonEl.onclick = () => { currentQuestionIndex++; showQuestion(); };
+
+        // Start pertama kali
+        startNewTest();
+    </script>
 </body>
 </html>
